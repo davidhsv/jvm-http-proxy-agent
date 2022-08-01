@@ -1,5 +1,5 @@
 name: CI
-on: [push, pull_request]
+on: [master]
 jobs:
   build:
     name: Build & test
@@ -32,7 +32,6 @@ jobs:
 
       - name: Publish tagged release
         uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/libs/*-dist.jar
