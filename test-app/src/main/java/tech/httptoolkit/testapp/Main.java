@@ -1,6 +1,5 @@
 package tech.httptoolkit.testapp;
 
-import scala.util.control.Exception;
 import tech.httptoolkit.testapp.cases.*;
 
 import java.lang.management.ManagementFactory;
