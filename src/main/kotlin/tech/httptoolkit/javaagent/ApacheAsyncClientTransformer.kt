@@ -4,7 +4,6 @@ import net.bytebuddy.agent.builder.AgentBuilder
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.OverrideSslContextFieldAdvice
 
 // Apache async client hooks depend on the non-async Apache client transformers, which successfully transform proxy
 // configuration, but we need to separate re-transform TLS configuration too.
@@ -40,7 +39,7 @@ class ApacheClientTlsStrategyTransformer(logger: TransformationLogger) : Matchin
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.OverrideSslContextFieldAdvice")
+                loadAdvice("OverrideSslContextFieldAdvice")
                     .on(hasMethodName("upgrade"))
             )
     }

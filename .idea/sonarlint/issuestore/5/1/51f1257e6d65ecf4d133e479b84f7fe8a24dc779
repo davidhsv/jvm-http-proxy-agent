@@ -1,0 +1,10 @@
+
+g	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(£ƒúÿÿÿÿ8ü¸¶¥0
+\
+java:S1118	":Add a private constructor to hide the implicit public one.(ã™Âôÿÿÿÿÿ8Š¹¶¥0
+I
+java:S3011",This accessibility update should be removed.(˜ÂÓ˜8Œ¹¶¥0
+I
+java:S3011",This accessibility bypass should be removed.(ÀÓ—ó8¹¶¥0
+J	java:S108")Either remove or fill this block of code.(ıŞ•ûùÿÿÿÿ8¹¶¥0
+J	java:S108'")Either remove or fill this block of code.(ıŞ•ûùÿÿÿÿ8¹¶¥0

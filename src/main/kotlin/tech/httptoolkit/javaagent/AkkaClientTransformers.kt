@@ -7,7 +7,6 @@ import net.bytebuddy.dynamic.ClassFileLocator
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
 import net.bytebuddy.pool.TypePool
-import tech.httptoolkit.javaagent.advice.akka.*
 
 // First, we hook outgoing connection creation, and ensure that new connections always go via the proxy & trust us:
 class AkkaHttpTransformer(logger: TransformationLogger) : MatchingAgentTransformer(logger) {
@@ -20,7 +19,7 @@ class AkkaHttpTransformer(logger: TransformationLogger) : MatchingAgentTransform
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.akka.OverrideHttpSettingsAdvice")
+                loadAdvice("OverrideHttpSettingsAdvice")
                     .on(hasMethodName("_outgoingConnection"))
             )
     }
@@ -39,7 +38,7 @@ class AkkaPoolSettingsTransformer(logger: TransformationLogger) : MatchingAgentT
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.akka.ResetPoolSetupAdvice")
+                loadAdvice("ResetPoolSetupAdvice")
                     .on(isConstructor())
             )
     }
@@ -57,7 +56,7 @@ class AkkaPoolTransformer(logger: TransformationLogger) : MatchingAgentTransform
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.akka.ResetOldPoolsAdvice")
+                loadAdvice("ResetOldPoolsAdvice")
                     .on(hasMethodName("dispatchRequest"))
             )
     }
@@ -74,7 +73,7 @@ class AkkaGatewayTransformer(logger: TransformationLogger) : MatchingAgentTransf
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.akka.ResetOldGatewaysAdvice")
+                loadAdvice("ResetOldGatewaysAdvice")
                     .on(hasMethodName("apply"))
             )
     }

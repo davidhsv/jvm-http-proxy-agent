@@ -5,7 +5,6 @@ import net.bytebuddy.asm.Advice
 import net.bytebuddy.description.method.MethodDescription
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.apacheclient.*
 
 // For both v4 & v5 we override all implementations of the RoutePlanner interface, and we redefine all routes
 // to go via our proxy instead of their existing configuration.
@@ -21,7 +20,7 @@ class ApacheClientRoutingV4Transformer(logger: TransformationLogger) : MatchingA
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder.visit(
-            loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheV4ReturnProxyRouteAdvice")
+            loadAdvice("ApacheV4ReturnProxyRouteAdvice")
                 .on(hasMethodName("determineRoute"))
         )
     }
@@ -38,7 +37,7 @@ class ApacheClientRoutingV5Transformer(logger: TransformationLogger) : MatchingA
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder.visit(
-            loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheV5ReturnProxyRouteAdvice")
+            loadAdvice("ApacheV5ReturnProxyRouteAdvice")
                 .on(hasMethodName("determineRoute"))
         )
     }
@@ -62,7 +61,7 @@ class ApacheSslSocketFactoryTransformer(logger: TransformationLogger) : Matching
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheSetSslSocketFactoryAdvice")
+                loadAdvice("ApacheSetSslSocketFactoryAdvice")
                     .on(hasMethodName("createLayeredSocket"))
         );
     }
@@ -86,7 +85,7 @@ class ApacheHostConfigurationTransformer(logger: TransformationLogger) : Matchin
             // setProxy/ProxyHost. We don't no-op these, because we want to call them ourselves later on
             // existing configs to reset them - we don't just want to ignore this.
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheOverrideProxyHostFieldAdvice")
+                loadAdvice("ApacheOverrideProxyHostFieldAdvice")
                     .on(isConstructor<MethodDescription>()
                         .or(hasMethodName("setProxy"))
                         .or(hasMethodName("setProxyHost"))
@@ -110,7 +109,7 @@ class ApacheHttpMethodDirectorTransformer(logger: TransformationLogger) : Matchi
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheSetConfigProxyHostAdvice")
+                loadAdvice("ApacheSetConfigProxyHostAdvice")
                     .on(hasMethodName("executeMethod"))
             )
     }
@@ -130,7 +129,7 @@ class ApacheProtocolTransformer(logger: TransformationLogger) : MatchingAgentTra
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.apacheclient.ApacheReturnCustomSslProtocolSocketFactoryAdvice")
+                loadAdvice("ApacheReturnCustomSslProtocolSocketFactoryAdvice")
                     .on(hasMethodName("getSocketFactory"))
             )
     }

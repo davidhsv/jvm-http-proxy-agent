@@ -17,7 +17,7 @@ class VertxHttpClientTransformer(logger: TransformationLogger): MatchingAgentTra
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.vertxclient.VertxHttpClientReturnProxyConfigurationAdvice")
+            .visit(loadAdvice("VertxHttpClientReturnProxyConfigurationAdvice")
                 .on(hasMethodName("getProxyOptions")))
     }
 }

@@ -5,9 +5,6 @@ import net.bytebuddy.asm.Advice
 import net.bytebuddy.description.method.MethodDescription
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.ReturnProxyAdvice
-import tech.httptoolkit.javaagent.advice.ktor.KtorResetProxyFieldAdvice
-import tech.httptoolkit.javaagent.advice.ktor.KtorResetTlsClientTrustAdvice
 
 // To intercept HTTPS, we need to change the trust manager in TLSConfig instances. We don't want
 // to mess with server config though, so we clone the config argument and replace it with one that
@@ -22,7 +19,7 @@ class KtorClientTlsTransformer(logger: TransformationLogger) : MatchingAgentTran
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ktor.KtorResetTlsClientTrustAdvice")
+            .visit(loadAdvice("KtorResetTlsClientTrustAdvice")
                 .on(hasMethodName<MethodDescription>("openTLSSession")
                     .and(takesArgument(3, named("io.ktor.network.tls.TLSConfig")))))
     }
@@ -40,7 +37,7 @@ class KtorClientEngineConfigTransformer(logger: TransformationLogger) : Matching
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnProxyAdvice")
+            .visit(loadAdvice("ReturnProxyAdvice")
                 .on(hasMethodName("getProxy")))
         }
 }
@@ -59,7 +56,7 @@ class KtorCioEngineTransformer(logger: TransformationLogger) : MatchingAgentTran
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ktor.KtorResetProxyFieldAdvice")
+            .visit(loadAdvice("KtorResetProxyFieldAdvice")
                 .on(hasMethodName("execute")))
     }
 }

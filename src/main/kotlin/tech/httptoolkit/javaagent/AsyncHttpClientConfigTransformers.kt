@@ -4,9 +4,6 @@ import net.bytebuddy.agent.builder.AgentBuilder
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpClientReturnProxySelectorAdvice
-import tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpClientReturnSslContextAdvice
-import tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpResetSslEngineFactoryAdvice
 
 // For new clients, we just need to override the properties on the convenient config
 // class that contains both proxy & SSL configuration.
@@ -23,10 +20,10 @@ class AsyncHttpClientConfigTransformer(logger: TransformationLogger) : MatchingA
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpClientReturnSslContextAdvice")
+                loadAdvice("AsyncHttpClientReturnSslContextAdvice")
                     .on(hasMethodName("getSslContext")))
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpClientReturnProxySelectorAdvice")
+                loadAdvice("AsyncHttpClientReturnProxySelectorAdvice")
                     .on(hasMethodName("getProxyServerSelector")))
     }
 }
@@ -44,7 +41,7 @@ class AsyncHttpChannelManagerTransformer(logger: TransformationLogger) : Matchin
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
             .visit(
-                loadAdvice("tech.httptoolkit.javaagent.advice.asynchttpclient.AsyncHttpResetSslEngineFactoryAdvice")
+                loadAdvice("AsyncHttpResetSslEngineFactoryAdvice")
                     .on(hasMethodName("createSslHandler")))
     }
 }

@@ -18,7 +18,7 @@ class VertxNetClientOptionsTransformer(logger: TransformationLogger): MatchingAg
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.vertxclient.VertxNetClientOptionsSetTrustOptionsAdvice")
+            .visit(loadAdvice("VertxNetClientOptionsSetTrustOptionsAdvice")
                 .on(
                     isConstructor<MethodDescription>()
                         .and(takesArguments(1))

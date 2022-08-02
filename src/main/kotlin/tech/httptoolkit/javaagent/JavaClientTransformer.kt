@@ -4,8 +4,6 @@ import net.bytebuddy.agent.builder.AgentBuilder
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.ReturnProxySelectorAdvice
-import tech.httptoolkit.javaagent.advice.ReturnSslContextAdvice
 
 
 class JavaClientTransformer(logger: TransformationLogger): MatchingAgentTransformer(logger) {
@@ -20,11 +18,11 @@ class JavaClientTransformer(logger: TransformationLogger): MatchingAgentTransfor
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnProxySelectorAdvice")
+            .visit(loadAdvice("ReturnProxySelectorAdvice")
                 .on(hasMethodName("proxy")))
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnSslContextAdvice")
+            .visit(loadAdvice("ReturnSslContextAdvice")
                 .on(hasMethodName("sslContext")))
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnSslContextAdvice")
+            .visit(loadAdvice("ReturnSslContextAdvice")
                 .on(hasMethodName("theSSLContext")))
     }
 }

@@ -6,10 +6,6 @@ import net.bytebuddy.description.method.MethodDescription
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
 import org.eclipse.jetty.util.ssl.SslContextFactory
-import tech.httptoolkit.javaagent.advice.jettyclient.JettyResetDestinationsAdvice
-import tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnProxyConfigurationAdvice
-import tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnSslContextFactoryV10Advice
-import tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnSslContextFactoryV9Advice
 
 /**
  * Transforms the JettyClient to use our proxy & trust our certificate.
@@ -32,17 +28,17 @@ class JettyClientTransformer(logger: TransformationLogger): MatchingAgentTransfo
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnProxyConfigurationAdvice")
+            .visit(loadAdvice("JettyReturnProxyConfigurationAdvice")
                 .on(hasMethodName("getProxyConfiguration")))
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnSslContextFactoryV10Advice")
+            .visit(loadAdvice("JettyReturnSslContextFactoryV10Advice")
                 .on(hasMethodName<MethodDescription>("getSslContextFactory").and(
                     returns(SslContextFactory.Client::class.java)
                 )))
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.jettyclient.JettyReturnSslContextFactoryV9Advice")
+            .visit(loadAdvice("JettyReturnSslContextFactoryV9Advice")
                 .on(hasMethodName<MethodDescription>("getSslContextFactory").and(
                     returns(SslContextFactory::class.java)
                 )))
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.jettyclient.JettyResetDestinationsAdvice")
+            .visit(loadAdvice("JettyResetDestinationsAdvice")
                 .on(hasMethodName("resolveDestination")))
     }
 }

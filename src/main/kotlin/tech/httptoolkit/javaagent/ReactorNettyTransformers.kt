@@ -7,10 +7,6 @@ import net.bytebuddy.description.method.MethodDescription
 import net.bytebuddy.description.type.TypeDescription
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.ReturnProxyAddressAdvice
-import tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyResetAllConfigAdvice
-import tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyResetHttpClientSecureSslAdvice
-import tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyV09ResetProxyProviderFieldAdvice
 
 // To patch Reactor-Netty's v1 HTTP client, we hook the constructor of the client itself. It has a constructor
 // that receives the config as part of every single HTTP request - we hook that to reset the relevant
@@ -39,7 +35,7 @@ class ReactorNettyClientConfigTransformer(logger: TransformationLogger): Matchin
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyResetAllConfigAdvice")
+            .visit(loadAdvice("ReactorNettyResetAllConfigAdvice")
                 .on(matchConfigConstructor)
             )
     }
@@ -62,7 +58,7 @@ class ReactorNettyHttpClientSecureTransformer(logger: TransformationLogger): Mat
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyResetHttpClientSecureSslAdvice")
+            .visit(loadAdvice("ReactorNettyResetHttpClientSecureSslAdvice")
                 .on(isConstructor()))
     }
 }
@@ -75,7 +71,7 @@ class ReactorNettyProxyProviderTransformer(logger: TransformationLogger): Matchi
                 declaresField(named<FieldDescription>("proxyProvider").and(
                     // This only applies to v0.9+ which uses this package name, not v1+ where ProxyProvider
                     // lives in reactor.netty.transport (handled by the other transformer above)
-                    fieldType(named("reactor.netty.tcp.ProxyProvider")))
+                    fieldType(named("ProxyProvider")))
                 )
             ).and(
                 named<TypeDescription>(
@@ -90,7 +86,7 @@ class ReactorNettyProxyProviderTransformer(logger: TransformationLogger): Matchi
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.reactornetty.ReactorNettyV09ResetProxyProviderFieldAdvice")
+            .visit(loadAdvice("ReactorNettyV09ResetProxyProviderFieldAdvice")
                 .on(isConstructor()))
     }
 }
@@ -106,7 +102,7 @@ class ReactorNettyOverrideRequestAddressTransformer(logger: TransformationLogger
                 declaresField(named<FieldDescription>("proxyProvider").and(
                     // This ensures this only applies to v0.9+ which uses this package name, not v1+ where
                     // ProxyProvider lives in reactor.netty.transport (handled separately above).
-                    fieldType(named("reactor.netty.tcp.ProxyProvider")))
+                    fieldType(named("ProxyProvider")))
                 )
             ).and(
                 named(
@@ -117,7 +113,7 @@ class ReactorNettyOverrideRequestAddressTransformer(logger: TransformationLogger
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnProxyAddressAdvice")
+            .visit(loadAdvice("ReturnProxyAddressAdvice")
                 .on(hasMethodName("get")))
     }
 }

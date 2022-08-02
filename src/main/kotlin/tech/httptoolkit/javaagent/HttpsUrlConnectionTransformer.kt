@@ -4,7 +4,6 @@ import net.bytebuddy.agent.builder.AgentBuilder
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.DynamicType
 import net.bytebuddy.matcher.ElementMatchers.*
-import tech.httptoolkit.javaagent.advice.ReturnSslSocketFactoryAdvice
 
 // We override the SSLSocketFactory field for HttpsURLConnections. This is the only way to access the
 // configured field, so this effectively reconfigured every such connection to trust our certificate.
@@ -20,7 +19,7 @@ class HttpsUrlConnectionTransformer(logger: TransformationLogger): MatchingAgent
 
     override fun transform(builder: DynamicType.Builder<*>, loadAdvice: (String) -> Advice): DynamicType.Builder<*> {
         return builder
-            .visit(loadAdvice("tech.httptoolkit.javaagent.advice.ReturnSslSocketFactoryAdvice")
+            .visit(loadAdvice("ReturnSslSocketFactoryAdvice")
                 .on(hasMethodName("getSSLSocketFactory")))
     }
 }
