@@ -127,14 +127,14 @@ tasks.register('r8Jar', JavaExec) { task ->
     }.flatten())
 
     doFirst {
-//        def java8Home = System.getenv("JAVA_HOME_8_X64")
-        //        if (java8Home == null || java8Home.empty) {
-//            throw new GradleException("\$JAVA_HOME_8_X64 must be set to build a minified distributable")
-//        } else {
-        // AFAICT R8 only supports the Java 8 lib files. We require that to be available, configured by env
-        task.args += "--lib"
-        task.args += "/Users/davidvieira2/Library/Java/JavaVirtualMachines/liberica-1.8.0_342"
-//        }
+         def java8Home = System.getenv("JAVA_HOME_8_X64")
+        if (java8Home == null || java8Home.empty) {
+            throw new GradleException("\$JAVA_HOME_8_X64 must be set to build a minified distributable")
+        } else {
+            // AFAICT R8 only supports the Java 8 lib files. We require that to be available, configured by env
+            task.args += "--lib"
+            task.args += java8Home
+        }
 
         task.args += shadowJar.getArchiveFile().get().asFile.toString()
     }
